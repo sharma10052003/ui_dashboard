@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard UI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-color: #DDEBF8; /* The outer background */
+            --sidebar-bg: #FFFFFF;
+            --card-bg: #FFFFFF;
+            --text-primary: #333333;
+            --text-secondary: #8E9BB3; /* Muted text */
+            --accent-blue: #2D9CDB; /* The main blue color */
+            --accent-blue-light: #EBF6FB;
+            --border-radius: 20px;
+            --shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+
+        /* Main Container mimicking the screen in the image */
+        .dashboard-container {
+            display: flex;
+            width: 1400px;
+            height: 900px;
+            background-color: #F5F9FC; /* Light blue-grey inside */
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 240px;
+            background: white;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #f0f0f0;
+        }
+
+        .menu-icon { margin-bottom: 30px; font-size: 24px; cursor: pointer;}
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .profile-pic {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #E0E0E0;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #333;
+        }
+        .profile-name { font-weight: 600; font-size: 14px; }
+
+        .nav-links { list-style: none; }
+        .nav-links li {
+            padding: 12px 0;
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .nav-links li.active { color: #000; font-weight: 600; }
+        .nav-links li:hover { color: var(--accent-blue); }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: transparent;
+        }
+        .search-bar svg { margin-right: 10px; fill: #333; }
+        .search-bar input {
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            width: 200px;
+        }
+        .header-icons { display: flex; gap: 20px; align-items: center; }
+
+        /* Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* 2/3 and 1/3 split */
+            gap: 25px;
+            height: 100%;
+        }
+
+        /* Cards Generic */
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            text-transform: lowercase; /* match image style */
+        }
+
+        /* ROW 1: Income & Balance */
+        .row-1 {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+            height: 220px;
+        }
+
+        /* Income Chart */
+        .income-chart-container {
+            position: relative;
+            height: 120px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .wave-svg { width: 100%; height: 100%; }
+
+        /* Balance Card */
+        .balance-amount {
+            font-size: 42px;
+            font-weight: 300;
+            color: var(--accent-blue);
+            margin: 10px 0 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .dollar-sign { font-size: 24px; margin-right: 10px; margin-top: 8px; }
+        .see-history-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            float: right;
+        }
+
+        /* ROW 2: Growth, Expense, Viewed */
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+            height: 200px;
+        }
+
+        /* Growth Bar Chart */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 100px;
+            padding-top: 20px;
+        }
+        .bar {
+            width: 12px;
+            background: #E1EAF5;
+            border-radius: 10px;
+        }
+        /* Manually setting heights to match image approximately */
+        .bar:nth-child(1) { height: 40%; }
+        .bar:nth-child(2) { height: 70%; background: #D1E5F8; }
+        .bar:nth-child(3) { height: 30%; }
+        .bar:nth-child(4) { height: 50%; }
+        .bar:nth-child(5) { height: 60%; }
+        .bar:nth-child(6) { height: 35%; }
+        .bar:nth-child(7) { height: 65%; }
+        .bar:nth-child(8) { height: 20%; }
+        .bar:nth-child(9) { height: 55%; }
+        .bar:nth-child(10) { height: 45%; }
+
+        /* Expense Donuts */
+        .donuts-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100px;
+        }
+        .donut {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+        .donut::after {
+            content: '';
+            position: absolute;
+            width: 54px;
+            height: 54px;
+            background: white;
+            border-radius: 50%;
+        }
+        .donut span { position: relative; z-index: 2; }
+        
+        /* Conic Gradients for segments */
+        .d-80 { background: conic-gradient(var(--accent-blue) 0% 80%, #E0E0E0 80% 100%); }
+        .d-75 { background: conic-gradient(var(--accent-blue) 0% 75%, #E0E0E0 75% 100%); }
+        .d-50 { background: conic-gradient(var(--accent-blue) 0% 50%, #E0E0E0 50% 100%); }
+
+        /* Most Viewed Items */
+        .viewed-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #555;
+        }
+        .boost-btn {
+            background: var(--accent-blue);
+            color: white;
+            font-size: 8px;
+            padding: 3px 10px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* ROW 3: Invoices & Message */
+        .row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            height: 240px;
+        }
+
+        /* Invoices List */
+        .invoice-list { list-style: none; }
+        .invoice-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #555;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .invoice-item::before {
+            content: "•";
+            color: var(--accent-blue);
+            font-size: 16px;
+            margin-right: 8px;
+        }
+        .status-pill {
+            background: var(--accent-blue);
+            color: white;
+            font-size: 8px;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        /* Message List */
+        .message-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1.5fr;
+            gap: 10px;
+            font-size: 11px;
+        }
+        .msg-name { color: var(--accent-blue); font-weight: 600; }
+        .msg-topic { font-weight: 600; color: #333; }
+        .msg-desc { color: #333; }
+        .msg-row { display: contents; }
+        .msg-row > div { padding-bottom: 12px; }
+
+        /* Utility Icons */
+        .icon { width: 20px; height: 20px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <div class="sidebar">
+            <div class="menu-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            </div>
+            
+            <div class="profile-section">
+                <div class="profile-pic">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                </div>
+                <div class="profile-name">My Profile</div>
+            </div>
+
+            <ul class="nav-links">
+                <li class="active">Dashboard</li>
+                <li>Inbox</li>
+                <li>Send</li>
+                <li>Draft</li>
+                <li>Apps</li>
+                <li>Add ons</li>
+                <li>Project</li>
+                <li>Notes</li>
+                <li>Favorit</li>
+                <li>Setting</li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            
+            <div class="header">
+                <div class="search-bar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" placeholder="Search something">
+                </div>
+                <div class="header-icons">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> </div>
+            </div>
+
+            <div class="row-1">
+                <div class="card">
+                    <div class="card-title">income</div>
+                    <div class="income-chart-container">
+                        <svg viewBox="0 0 500 150" preserveAspectRatio="none" class="wave-svg">
+                            <defs>
+                                <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#2D9CDB;stop-opacity:0.3" />
+                                    <stop offset="100%" style="stop-color:#2D9CDB;stop-opacity:0" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M0,100 C50,100 80,60 120,60 C160,60 190,90 240,90 C290,90 320,110 380,110 C420,110 440,30 480,30 C500,30 500,50 500,150 L0,150 Z" fill="url(#grad1)" />
+                            <path d="M0,100 C50,100 80,60 120,60 C160,60 190,90 240,90 C290,90 320,110 380,110 C420,110 440,30 480,30 L500,40" stroke="#2D9CDB" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">balance</div>
+                    <div class="balance-amount">
+                        <span class="dollar-sign">$</span> 15.000
+                    </div>
+                    <button class="see-history-btn">see history</button>
+                </div>
+            </div>
+
+            <div class="row-2">
+                <div class="card">
+                    <div class="card-title">growth</div>
+                    <div class="bar-chart">
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">expense</div>
+                    <div class="donuts-container">
+                        <div class="donut d-80"><span>80%</span></div>
+                        <div class="donut d-75"><span>75%</span></div>
+                        <div class="donut d-50"><span>50%</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">most viewed item</div>
+                    <div class="viewed-item"><span>item 01</span><span class="boost-btn">BOOST</span></div>
+                    <div class="viewed-item"><span>item 02</span><span class="boost-btn">BOOST</span></div>
+                    <div class="viewed-item"><span>item 03</span><span class="boost-btn">BOOST</span></div>
+                    <div class="viewed-item"><span>item 04</span><span class="boost-btn">BOOST</span></div>
+                </div>
+            </div>
+
+            <div class="row-3">
+                <div class="card">
+                    <div class="card-title">invoices</div>
+                    <ul class="invoice-list">
+                        <li class="invoice-item">
+                            <span>Invoices 01/November/1245/s/0</span> <span class="status-pill">PAID</span>
+                        </li>
+                        <li class="invoice-item">
+                            <span>Invoices 02/November/1123/f/0</span> <span class="status-pill">PAID</span>
+                        </li>
+                        <li class="invoice-item">
+                            <span>Invoices 03/November/1298/a/0</span> <span class="status-pill">PAID</span>
+                        </li>
+                        <li class="invoice-item">
+                            <span>Invoices 04/November/1247/s/0</span> <span class="status-pill">PAID</span>
+                        </li>
+                         <li class="invoice-item">
+                            <span>Invoices 05/November/1333/c/0</span> <span class="status-pill">PAID</span>
+                        </li>
+                         <li class="invoice-item">
+                            <span>Invoices 06/November/2134/v/0</span> <span class="status-pill">PAID</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-title">message</div>
+                    <div class="message-grid">
+                        <div class="msg-row">
+                            <div class="msg-name">Johnson, Mark</div>
+                            <div class="msg-topic">[ Invoice November ]</div>
+                            <div class="msg-desc">Status Update : Success</div>
+                        </div>
+                        <div class="msg-row">
+                            <div class="msg-name">Adelia, Nadia</div>
+                            <div class="msg-topic">[ Project Assigment ]</div>
+                            <div class="msg-desc">Presentation Material</div>
+                        </div>
+                        <div class="msg-row">
+                            <div class="msg-name">Amelia, Laura</div>
+                            <div class="msg-topic">[ Meeting Schedule ]</div>
+                            <div class="msg-desc">Project : interior design</div>
+                        </div>
+                         <div class="msg-row">
+                            <div class="msg-name">Johnson, Mark</div>
+                            <div class="msg-topic">[ Invoice November ]</div>
+                            <div class="msg-desc">Status Update : Success</div>
+                        </div>
+                        <div class="msg-row">
+                            <div class="msg-name">Adelia, Nadia</div>
+                            <div class="msg-topic">[ Project Assigment ]</div>
+                            <div class="msg-desc">Presentation Material</div>
+                        </div>
+                        <div class="msg-row">
+                            <div class="msg-name">Amelia, Laura</div>
+                            <div class="msg-topic">[ Meeting Schedule ]</div>
+                            <div class="msg-desc">Project : interior design</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
