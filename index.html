@@ -3,476 +3,922 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard UI</title>
+    <title>Smart Health Reminder App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
-
-        :root {
-            --bg-color: #DDEBF8; /* The outer background */
-            --sidebar-bg: #FFFFFF;
-            --card-bg: #FFFFFF;
-            --text-primary: #333333;
-            --text-secondary: #8E9BB3; /* Muted text */
-            --accent-blue: #2D9CDB; /* The main blue color */
-            --accent-blue-light: #EBF6FB;
-            --border-radius: 20px;
-            --shadow: 0 4px 20px rgba(0,0,0,0.03);
-        }
-
+        /* 1. THE SETUP - Coder/Tech Aesthetic */
         * {
             box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        p {
+            margin: 0;
+            margin-bottom: 15px;
+        }
+
+        body {
+            background-color: #000000;
+            display: grid;
+            gap: 40px;
+            grid-template-columns: 1fr;
+            margin: 0;
+            min-height: 100vh;
+            padding: 40px 0;
+            place-items: center;
+        }
+
+        /* Health-Tech Background Integration */
+        .slide-container {
+            align-items: center;
+            background-color: #0F172A; /* Fallback Deep Navy */
+            /* Blended Dark Medical/Tech Background Image */
+            background-image: 
+                linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.95)),
+                url('https://images.unsplash.com/photo-1576091160550-21080f0a85fd?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(56, 189, 248, 0.1);
+            display: flex;
+            flex-direction: column;
+            font-family: 'Inter', sans-serif;
+            height: 720px;
+            justify-content: center;
+            overflow: hidden;
+            padding: 60px;
+            position: relative;
+            width: 1280px;
+        }
+
+        /* Abstract Foreground Elements (Tech Grid overlay) */
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .slide-container > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 2. CONSISTENT TYPOGRAPHY */
+        .slide-container h1,
+        .slide-container h2,
+        .slide-container h3 {
+            color: #F8FAFC;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+
+        .slide-container p,
+        .slide-container li,
+        .slide-container .subtitle,
+        .slide-container .legend li,
+        .slide-container .chart-summary,
+        .slide-container .bar .label {
+            color: #94A3B8;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Monospace for numbers/tech data */
+        .slide-container .number,
+        .slide-container .bar-fill,
+        .slide-container .label,
+        .slide-container .tech-font {
+            font-family: 'Fira Code', monospace;
+            letter-spacing: -0.5px;
+        }
+
+        .slide-container h1 {
+            font-size: 70px;
+            color: #38BDF8; /* Neon Blue */
+        }
+
+        .slide-container .slide-title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: left;
+            width: 100%;
+            color: #4ADE80; /* Electric Green */
+            border-bottom: 2px solid rgba(51, 65, 85, 0.5);
+            padding-bottom: 10px;
+        }
+
+        .slide-container h3 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #F8FAFC;
+        }
+
+        .slide-container p,
+        .slide-container li,
+        .slide-container .subtitle {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .slide-container .subtitle {
+            font-weight: 400;
+            margin: 20px auto;
+            color: #94A3B8;
+        }
+
+        .slide-container .content-area {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* 3. LAYOUT DEFINITIONS */
+        .title-layout {
+            text-align: left;
+            padding-right: 40px;
+        }
+
+        .two-column {
+            align-items: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            width: 100%;
+        }
+
+        .two-column.tiled {
+            align-items: stretch;
+        }
+
+        .two-column.tiled > div {
+            background-color: rgba(30, 41, 59, 0.7);
+            border-radius: 8px;
+            border: 1px solid #334155;
+            padding: 40px;
+            text-align: left;
+            backdrop-filter: blur(10px);
+        }
+
+        .two-column.tiled h3 {
+            color: #A78BFA; /* Purple */
+        }
+
+        .image-wrapper {
+            border-radius: 8px;
+            border: 1px solid #334155;
+            height: 450px;
+            max-width: 100%;
+            overflow: hidden;
+            width: 100%;
+            background-color: #0B1120;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .image-wrapper img {
+            height: 100%;
+            max-width: 100%;
+            object-fit: cover;
+            width: 100%;
+            opacity: 0.85; /* Blend slightly with dark mode */
+            transition: opacity 0.3s ease;
+        }
+
+        .image-wrapper img:hover {
+            opacity: 1;
+        }
+
+        .tiled-content {
+            align-items: stretch;
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .tile {
+            align-items: center;
+            background-color: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: flex-start;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .tile .icon {
+            color: #38BDF8;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .bullet-list ul {
+            list-style: none;
             margin: 0;
             padding: 0;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--text-primary);
-        }
-
-        /* Main Container mimicking the screen in the image */
-        .dashboard-container {
-            display: flex;
-            width: 1400px;
-            height: 900px;
-            background-color: #F5F9FC; /* Light blue-grey inside */
-            border-radius: 30px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-        }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 240px;
-            background: white;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #f0f0f0;
-        }
-
-        .menu-icon { margin-bottom: 30px; font-size: 24px; cursor: pointer;}
-
-        .profile-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .profile-pic {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: #E0E0E0;
-            margin: 0 auto 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #333;
-        }
-        .profile-name { font-weight: 600; font-size: 14px; }
-
-        .nav-links { list-style: none; }
-        .nav-links li {
-            padding: 12px 0;
-            color: var(--text-primary);
-            font-size: 14px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        .nav-links li.active { color: #000; font-weight: 600; }
-        .nav-links li:hover { color: var(--accent-blue); }
-
-        /* --- MAIN CONTENT --- */
-        .main-content {
-            flex: 1;
-            padding: 30px 40px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .search-bar {
-            display: flex;
-            align-items: center;
-            background: transparent;
-        }
-        .search-bar svg { margin-right: 10px; fill: #333; }
-        .search-bar input {
-            border: none;
-            background: transparent;
-            font-family: inherit;
-            font-size: 14px;
-            outline: none;
-            width: 200px;
-        }
-        .header-icons { display: flex; gap: 20px; align-items: center; }
-
-        /* Grid Layout */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 2fr 1fr; /* 2/3 and 1/3 split */
-            gap: 25px;
-            height: 100%;
-        }
-
-        /* Cards Generic */
-        .card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 25px;
-            box-shadow: var(--shadow);
-            position: relative;
-        }
-        .card-title {
-            font-size: 16px;
-            font-weight: 500;
+        .bullet-list li {
+            gap: 15px;
             margin-bottom: 20px;
-            text-transform: lowercase; /* match image style */
-        }
-
-        /* ROW 1: Income & Balance */
-        .row-1 {
-            display: grid;
-            grid-template-columns: 2.2fr 1fr;
-            gap: 25px;
-            margin-bottom: 25px;
-            height: 220px;
-        }
-
-        /* Income Chart */
-        .income-chart-container {
+            padding-left: 40px;
             position: relative;
-            height: 120px;
+        }
+
+        .bullet-list i {
+            color: #A78BFA;
+            font-size: 24px;
+            left: 0;
+            margin-top: 2px;
+            position: absolute;
+            text-align: center;
+            top: 0;
+        }
+
+        .bullet-list li strong {
+            color: #F8FAFC;
+            font-weight: 700;
+        }
+
+        /* Timeline Layout */
+        .timeline-layout {
+            align-items: stretch;
+            display: flex;
+            height: stretch;
+            justify-content: space-between;
+            position: relative;
             width: 100%;
-            margin-top: 10px;
-        }
-        .wave-svg { width: 100%; height: 100%; }
-
-        /* Balance Card */
-        .balance-amount {
-            font-size: 42px;
-            font-weight: 300;
-            color: var(--accent-blue);
-            margin: 10px 0 20px;
-            display: flex;
-            align-items: flex-start;
-        }
-        .dollar-sign { font-size: 24px; margin-right: 10px; margin-top: 8px; }
-        .see-history-btn {
-            background: var(--accent-blue);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            float: right;
+            margin-top: 40px;
         }
 
-        /* ROW 2: Growth, Expense, Viewed */
-        .row-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 25px;
-            margin-bottom: 25px;
-            height: 200px;
+        .timeline-layout .timeline-line {
+            background-color: #334155;
+            height: 4px;
+            left: 0;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-2px);
+            width: 100%;
+            z-index: 0;
         }
 
-        /* Growth Bar Chart */
-        .bar-chart {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            height: 100px;
-            padding-top: 20px;
-        }
-        .bar {
-            width: 12px;
-            background: #E1EAF5;
-            border-radius: 10px;
-        }
-        /* Manually setting heights to match image approximately */
-        .bar:nth-child(1) { height: 40%; }
-        .bar:nth-child(2) { height: 70%; background: #D1E5F8; }
-        .bar:nth-child(3) { height: 30%; }
-        .bar:nth-child(4) { height: 50%; }
-        .bar:nth-child(5) { height: 60%; }
-        .bar:nth-child(6) { height: 35%; }
-        .bar:nth-child(7) { height: 65%; }
-        .bar:nth-child(8) { height: 20%; }
-        .bar:nth-child(9) { height: 55%; }
-        .bar:nth-child(10) { height: 45%; }
-
-        /* Expense Donuts */
-        .donuts-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100px;
-        }
-        .donut {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
+        .timeline-item {
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: var(--accent-blue);
-            font-weight: 600;
+            text-align: center;
+            width: 23%;
         }
-        .donut::after {
+
+        .timeline-item::after {
+            background-color: #0F172A;
+            border-radius: 50%;
+            border: 4px solid #38BDF8;
+            content: '';
+            height: 24px;
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            z-index: 1;
+        }
+
+        .timeline-item .content-wrapper {
+            left: 0;
+            position: absolute;
+            width: 100%;
+        }
+
+        .timeline-item:nth-child(odd) .content-wrapper { bottom: 50%; margin-bottom: 35px; }
+        .timeline-item:nth-child(even) .content-wrapper { margin-top: 35px; top: 50%; }
+        .timeline-item h3 { color: #4ADE80; font-size: 24px; font-family: 'Fira Code', monospace; }
+
+        /* Rounded Image Layout */
+        .rounded-image-layout .image-wrapper {
+            border-radius: 50%;
+            flex-shrink: 0;
+            height: 380px;
+            width: 380px;
+            margin: 0 auto;
+            border: 4px solid #A78BFA;
+        }
+
+        /* Bleed Image Right Layout */
+        .slide-container.bleed-image-layout {
+            align-items: start;
+            display: grid;
+            gap: 50px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            padding: 0;
+            background-image: none; /* Let the right side image be the main visual */
+            background-color: #0F172A;
+        }
+
+        .slide-container.bleed-image-layout > .content-container {
+            padding: 60px 0 60px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .slide-container.bleed-image-layout > .image-container {
+            height: 100%;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        .slide-container.bleed-image-layout > .image-container::after {
             content: '';
             position: absolute;
-            width: 54px;
-            height: 54px;
-            background: white;
-            border-radius: 50%;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to right, #0F172A 0%, transparent 20%);
         }
-        .donut span { position: relative; z-index: 2; }
+
+        .slide-container.bleed-image-layout img.bleed-image-side {
+            border-radius: 0;
+            display: block;
+            height: 720px;
+            object-fit: cover;
+            object-position: center left;
+            width: 100%;
+            opacity: 0.7;
+        }
+
+        /* Charts & Custom Elements */
+        .chart-container { display: flex; flex-direction: column; gap: 30px; width: 100%; }
+        .bar { align-items: center; display: flex; gap: 20px; }
+        .bar .label { flex: 0 0 220px; text-align: right; font-size: 16px; font-weight: 600;}
+        .bar .bar-inner { background-color: rgba(11, 17, 32, 0.8); border-radius: 4px; border: 1px solid #334155; flex-grow: 1; height: 40px; }
+        .bar .bar-fill { align-items: center; border-radius: 3px; display: flex; font-size: 16px; font-weight: 600; height: 100%; justify-content: flex-end; padding-right: 15px; color: #0F172A; }
         
-        /* Conic Gradients for segments */
-        .d-80 { background: conic-gradient(var(--accent-blue) 0% 80%, #E0E0E0 80% 100%); }
-        .d-75 { background: conic-gradient(var(--accent-blue) 0% 75%, #E0E0E0 75% 100%); }
-        .d-50 { background: conic-gradient(var(--accent-blue) 0% 50%, #E0E0E0 50% 100%); }
+        .doughnut-chart-container { align-items: center; display: flex; gap: 80px; justify-content: center; width: 100%; margin-top: 30px; }
+        .doughnut-chart { border-radius: 50%; height: 380px; width: 380px; border: 10px solid #1E293B; }
+        .legend { display: flex; flex-direction: column; gap: 20px; list-style: none; margin: 0; padding: 0; }
+        .legend li { align-items: center; display: flex; font-family: 'Fira Code', monospace; }
+        .legend .color-box { border-radius: 4px; height: 22px; margin-right: 15px; width: 22px; }
 
-        /* Most Viewed Items */
-        .viewed-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 12px;
-            color: #555;
+        /* --- ANIMATION CLASSES --- */
+        .anim-element {
+            opacity: 0;
+            will-change: transform, opacity;
         }
-        .boost-btn {
-            background: var(--accent-blue);
-            color: white;
-            font-size: 8px;
-            padding: 3px 10px;
-            border-radius: 10px;
-            text-transform: uppercase;
-            font-weight: 700;
+        
+        /* Fade In Up */
+        .anim-fade-up { transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        /* Float / Zoom In */
+        .anim-zoom { transform: scale(0.9); transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        
+        /* Active State */
+        .is-visible {
+            opacity: 1 !important;
+            transform: translate(0) scale(1) !important;
         }
-
-        /* ROW 3: Invoices & Message */
-        .row-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            height: 240px;
-        }
-
-        /* Invoices List */
-        .invoice-list { list-style: none; }
-        .invoice-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: #555;
-            margin-bottom: 12px;
-            align-items: center;
-        }
-        .invoice-item::before {
-            content: "•";
-            color: var(--accent-blue);
-            font-size: 16px;
-            margin-right: 8px;
-        }
-        .status-pill {
-            background: var(--accent-blue);
-            color: white;
-            font-size: 8px;
-            padding: 3px 10px;
-            border-radius: 8px;
-            font-weight: 700;
-        }
-
-        /* Message List */
-        .message-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr 1.5fr;
-            gap: 10px;
-            font-size: 11px;
-        }
-        .msg-name { color: var(--accent-blue); font-weight: 600; }
-        .msg-topic { font-weight: 600; color: #333; }
-        .msg-desc { color: #333; }
-        .msg-row { display: contents; }
-        .msg-row > div { padding-bottom: 12px; }
-
-        /* Utility Icons */
-        .icon { width: 20px; height: 20px; }
-
     </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        
-        <div class="sidebar">
-            <div class="menu-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+    <!-- Slide 1: Bleed_Image_Right (Title Slide) -->
+    <div class="slide-container bleed-image-layout" id="slide1">
+        <div class="content-container anim-element anim-fade-up">
+            <div class="bleed-text-side title-layout">
+                <h1 style="color: #38BDF8;">Smart Health Reminder App</h1>
+                <p class="subtitle tech-font" style="color: #4ADE80; font-size: 20px;">// v1.0.0_release</p>
+                <p>A Digital Solution for Medication & Fitness Management designed for the modern lifestyle.</p>
             </div>
-            
-            <div class="profile-section">
-                <div class="profile-pic">
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
-                </div>
-                <div class="profile-name">My Profile</div>
-            </div>
-
-            <ul class="nav-links">
-                <li class="active">Dashboard</li>
-                <li>Inbox</li>
-                <li>Send</li>
-                <li>Draft</li>
-                <li>Apps</li>
-                <li>Add ons</li>
-                <li>Project</li>
-                <li>Notes</li>
-                <li>Favorit</li>
-                <li>Setting</li>
-            </ul>
         </div>
-
-        <div class="main-content">
-            
-            <div class="header">
-                <div class="search-bar">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <input type="text" placeholder="Search something">
-                </div>
-                <div class="header-icons">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> </div>
-            </div>
-
-            <div class="row-1">
-                <div class="card">
-                    <div class="card-title">income</div>
-                    <div class="income-chart-container">
-                        <svg viewBox="0 0 500 150" preserveAspectRatio="none" class="wave-svg">
-                            <defs>
-                                <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#2D9CDB;stop-opacity:0.3" />
-                                    <stop offset="100%" style="stop-color:#2D9CDB;stop-opacity:0" />
-                                </linearGradient>
-                            </defs>
-                            <path d="M0,100 C50,100 80,60 120,60 C160,60 190,90 240,90 C290,90 320,110 380,110 C420,110 440,30 480,30 C500,30 500,50 500,150 L0,150 Z" fill="url(#grad1)" />
-                            <path d="M0,100 C50,100 80,60 120,60 C160,60 190,90 240,90 C290,90 320,110 380,110 C420,110 440,30 480,30 L500,40" stroke="#2D9CDB" stroke-width="2" fill="none"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-title">balance</div>
-                    <div class="balance-amount">
-                        <span class="dollar-sign">$</span> 15.000
-                    </div>
-                    <button class="see-history-btn">see history</button>
-                </div>
-            </div>
-
-            <div class="row-2">
-                <div class="card">
-                    <div class="card-title">growth</div>
-                    <div class="bar-chart">
-                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                        <div class="bar"></div><div class="bar"></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-title">expense</div>
-                    <div class="donuts-container">
-                        <div class="donut d-80"><span>80%</span></div>
-                        <div class="donut d-75"><span>75%</span></div>
-                        <div class="donut d-50"><span>50%</span></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-title">most viewed item</div>
-                    <div class="viewed-item"><span>item 01</span><span class="boost-btn">BOOST</span></div>
-                    <div class="viewed-item"><span>item 02</span><span class="boost-btn">BOOST</span></div>
-                    <div class="viewed-item"><span>item 03</span><span class="boost-btn">BOOST</span></div>
-                    <div class="viewed-item"><span>item 04</span><span class="boost-btn">BOOST</span></div>
-                </div>
-            </div>
-
-            <div class="row-3">
-                <div class="card">
-                    <div class="card-title">invoices</div>
-                    <ul class="invoice-list">
-                        <li class="invoice-item">
-                            <span>Invoices 01/November/1245/s/0</span> <span class="status-pill">PAID</span>
-                        </li>
-                        <li class="invoice-item">
-                            <span>Invoices 02/November/1123/f/0</span> <span class="status-pill">PAID</span>
-                        </li>
-                        <li class="invoice-item">
-                            <span>Invoices 03/November/1298/a/0</span> <span class="status-pill">PAID</span>
-                        </li>
-                        <li class="invoice-item">
-                            <span>Invoices 04/November/1247/s/0</span> <span class="status-pill">PAID</span>
-                        </li>
-                         <li class="invoice-item">
-                            <span>Invoices 05/November/1333/c/0</span> <span class="status-pill">PAID</span>
-                        </li>
-                         <li class="invoice-item">
-                            <span>Invoices 06/November/2134/v/0</span> <span class="status-pill">PAID</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <div class="card-title">message</div>
-                    <div class="message-grid">
-                        <div class="msg-row">
-                            <div class="msg-name">Johnson, Mark</div>
-                            <div class="msg-topic">[ Invoice November ]</div>
-                            <div class="msg-desc">Status Update : Success</div>
-                        </div>
-                        <div class="msg-row">
-                            <div class="msg-name">Adelia, Nadia</div>
-                            <div class="msg-topic">[ Project Assigment ]</div>
-                            <div class="msg-desc">Presentation Material</div>
-                        </div>
-                        <div class="msg-row">
-                            <div class="msg-name">Amelia, Laura</div>
-                            <div class="msg-topic">[ Meeting Schedule ]</div>
-                            <div class="msg-desc">Project : interior design</div>
-                        </div>
-                         <div class="msg-row">
-                            <div class="msg-name">Johnson, Mark</div>
-                            <div class="msg-topic">[ Invoice November ]</div>
-                            <div class="msg-desc">Status Update : Success</div>
-                        </div>
-                        <div class="msg-row">
-                            <div class="msg-name">Adelia, Nadia</div>
-                            <div class="msg-topic">[ Project Assigment ]</div>
-                            <div class="msg-desc">Presentation Material</div>
-                        </div>
-                        <div class="msg-row">
-                            <div class="msg-name">Amelia, Laura</div>
-                            <div class="msg-topic">[ Meeting Schedule ]</div>
-                            <div class="msg-desc">Project : interior design</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="image-container anim-element anim-zoom" style="transition-delay: 0.2s;">
+            <!-- Health App / Smartwatch Context -->
+            <img class="bleed-image-side" src="https://images.unsplash.com/photo-1616348436168-de43ad0db179?auto=format&fit=crop&w=1200&q=80" alt="Modern health dashboard dark mode UI">
         </div>
     </div>
+
+    <!-- Slide 2: Image_Right_Text_Left (Introduction) -->
+    <div class="slide-container" id="slide2">
+        <h2 class="slide-title anim-element anim-fade-up">Introduction</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.1s;">Healthcare management is becoming increasingly important in modern life. As schedules become tighter, individuals often neglect vital routines.</p>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.2s;">Many people forget medications, adequate hydration, or daily fitness activities. The <strong style="color: #38BDF8;">Smart Health Reminder App</strong> is designed to seamlessly solve these problems.</p>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.3s;">By leveraging automated reminders, smart notifications, and comprehensive health tracking, users can effortlessly maintain their wellbeing.</p>
+                </div>
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.4s;">
+                        <!-- Fitness / Health Tech -->
+                        <img src="https://images.unsplash.com/photo-1505751172876-fa3f800c36aa?auto=format&fit=crop&w=800&q=80" alt="Digital Health Tech Concept">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Image_Right_Text_Left (Problem Statement) -->
+    <div class="slide-container" id="slide3">
+        <h2 class="slide-title anim-element anim-fade-up">Problem Statement</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <div class="bullet-list">
+                        <ul>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.1s;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> <strong>Missed Medications:</strong> People frequently forget to take medicines on time, leading to complications.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.2s;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> <strong>No Monitoring:</strong> A general lack of daily health and wellness monitoring.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.3s;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> <strong>Poor Adherence:</strong> Difficulty adhering strictly to prescribed medical routines.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.4s;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> <strong>Fitness Neglect:</strong> Difficulty consistently tracking and maintaining fitness activities.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.5s;">
+                        <!-- Medication / Forgetting Pills -->
+                        <img src="https://images.unsplash.com/photo-1584308666744-247e89d98e32?auto=format&fit=crop&w=800&q=80" alt="Person forgetting medication concept">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Two_Column_Tiled_Text (Solution Overview) -->
+    <div class="slide-container" id="slide4">
+        <h2 class="slide-title anim-element anim-fade-up">Solution Overview</h2>
+        <div class="content-area">
+            <div class="two-column tiled">
+                <div class="anim-element anim-fade-up" style="transition-delay: 0.1s;">
+                    <h3><i class="fa-solid fa-shield-halved"></i> Core Features</h3>
+                    <p>Our application centralizes health management into a single, intuitive interface designed to keep you on track.</p>
+                    <ul class="bullet-list" style="padding-left: 20px; list-style-type: square; color: #94A3B8;">
+                        <li style="margin-bottom: 10px;">Medication scheduling & reminders</li>
+                        <li style="margin-bottom: 10px;">Automated water intake tracking</li>
+                        <li style="margin-bottom: 10px;">Customizable exercise reminders</li>
+                    </ul>
+                </div>
+                <div class="anim-element anim-fade-up" style="transition-delay: 0.3s;">
+                    <h3><i class="fa-solid fa-chart-line"></i> Advanced Capabilities</h3>
+                    <p>Beyond simple alarms, the system utilizes data to provide actionable insights for long-term health improvements.</p>
+                    <ul class="bullet-list" style="padding-left: 20px; list-style-type: square; color: #94A3B8;">
+                        <li style="margin-bottom: 10px;">Deep health data analytics</li>
+                        <li style="margin-bottom: 10px;">Smart contextual notifications</li>
+                        <li style="margin-bottom: 10px;">Progress visualization dashboards</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Timeline (Workflow Overview) -->
+    <div class="slide-container" id="slide5">
+        <h2 class="slide-title anim-element anim-fade-up">App Workflow Overview</h2>
+        <div class="content-area">
+            <div class="timeline-layout">
+                <div class="timeline-line"></div>
+                <div class="timeline-item anim-element anim-fade-up" style="transition-delay: 0.1s;">
+                    <div class="content-wrapper">
+                        <h3>01_INIT</h3>
+                        <p>User Registration & Authentication</p>
+                    </div>
+                </div>
+                <div class="timeline-item anim-element anim-fade-up" style="transition-delay: 0.2s;">
+                    <div class="content-wrapper">
+                        <h3>02_SETUP</h3>
+                        <p>Health Profile & Baseline Configuration</p>
+                    </div>
+                </div>
+                <div class="timeline-item anim-element anim-fade-up" style="transition-delay: 0.3s;">
+                    <div class="content-wrapper">
+                        <h3>03_EXECUTE</h3>
+                        <p>Medication Scheduling & Goal Setting</p>
+                    </div>
+                </div>
+                <div class="timeline-item anim-element anim-fade-up" style="transition-delay: 0.4s;">
+                    <div class="content-wrapper">
+                        <h3>04_MONITOR</h3>
+                        <p>Daily Reminders & Health Analytics</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Image_Right_Text_Left (User Authentication) -->
+    <div class="slide-container" id="slide6">
+        <h2 class="slide-title anim-element anim-fade-up">User Authentication</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.1s;">A secure gateway ensuring personal health data remains private and protected at all times.</p>
+                    <div class="bullet-list">
+                        <ul>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.2s;"><i class="fa-solid fa-terminal"></i> Secure Login portal</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.3s;"><i class="fa-solid fa-terminal"></i> New user Registration</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.4s;"><i class="fa-solid fa-terminal"></i> Encrypted Password Recovery</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.5s;"><i class="fa-solid fa-terminal"></i> Multi-factor OTP Verification</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.6s;">
+                        <!-- Digital Security / Auth -->
+                        <img src="https://images.unsplash.com/photo-1614064641936-389989794d06?auto=format&fit=crop&w=800&q=80" alt="Digital security mobile auth">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Rounded_Image_and_Text (OTP Verification) -->
+    <div class="slide-container" id="slide7">
+        <h2 class="slide-title anim-element anim-fade-up">OTP Verification</h2>
+        <div class="content-area">
+            <div class="two-column rounded-image-layout">
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.2s;">
+                        <!-- Secure OTP / Code -->
+                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80" alt="OTP Security Concept">
+                    </div>
+                </div>
+                <div>
+                    <h3 class="anim-element anim-fade-up" style="transition-delay: 0.3s; color: #38BDF8;">Zero-Trust Security Model</h3>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.4s;">To guarantee maximum security for sensitive health data, users must verify their identity using a One-Time Password (OTP).</p>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.5s;">This dynamic code is securely transmitted to the user's registered email or phone, offering robust account protection against unauthorized access.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Tiled_Text_With_Icons (Health Profile) -->
+    <div class="slide-container" id="slide8">
+        <h2 class="slide-title anim-element anim-fade-up">User Health Profile Setup</h2>
+        <div class="content-area">
+            <div class="tiled-content">
+                <div class="tile anim-element anim-fade-up" style="transition-delay: 0.1s;">
+                    <div class="icon"><i class="fa-solid fa-calendar-days"></i></div>
+                    <h3 style="color:#38BDF8;">Age & Vitals</h3>
+                    <p>Baseline metric collection including accurate age, gender, and general medical history for tailored advice.</p>
+                </div>
+                <div class="tile anim-element anim-fade-up" style="transition-delay: 0.3s;">
+                    <div class="icon"><i class="fa-solid fa-weight-scale"></i></div>
+                    <h3 style="color:#38BDF8;">Biometrics</h3>
+                    <p>Input current weight and height to calculate BMI and set accurate caloric and hydration baselines.</p>
+                </div>
+                <div class="tile anim-element anim-fade-up" style="transition-delay: 0.5s;">
+                    <div class="icon"><i class="fa-solid fa-person-running"></i></div>
+                    <h3 style="color:#38BDF8;">Fitness Level</h3>
+                    <p>Establish current activity levels (sedentary to highly active) to calibrate workout intensity recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Image_Right_Text_Left (Goal Selection) -->
+    <div class="slide-container" id="slide9">
+        <h2 class="slide-title anim-element anim-fade-up">Goal Selection</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.1s;">Personalization is key to adherence. Users dynamically select primary objectives to configure the app's algorithms.</p>
+                    <div class="bullet-list">
+                        <ul>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.2s;"><i class="fa-solid fa-check"></i> <strong>Weight Loss:</strong> Caloric deficit tracking and cardio focus.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.3s;"><i class="fa-solid fa-check"></i> <strong>Gain Muscle:</strong> Protein intake monitoring and resistance training.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.4s;"><i class="fa-solid fa-check"></i> <strong>Improve Fitness:</strong> Endurance building and overall stamina tracking.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.5s;">
+                        <!-- Fitness Goals / Gym -->
+                        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80" alt="Fitness goals selection">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Image_Right_Text_Left (Dashboard) -->
+    <div class="slide-container" id="slide10">
+        <h2 class="slide-title anim-element anim-fade-up">Smart Dashboard</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.1s;">The centralized control hub providing immediate, at-a-glance insight into daily health compliance.</p>
+                    <div class="bullet-list">
+                        <ul>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.2s;"><i class="fa-solid fa-microchip"></i> Next scheduled medication reminder</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.3s;"><i class="fa-solid fa-microchip"></i> Comprehensive daily health schedule</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.4s;"><i class="fa-solid fa-microchip"></i> Real-time water intake progress</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.5s;"><i class="fa-solid fa-microchip"></i> Total activity summary (steps/calories)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.6s;">
+                        <!-- Tech Dashboard -->
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="App Dashboard UI Data">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 11: Image_Right_Text_Left (Medication Reminders) -->
+    <div class="slide-container" id="slide11">
+        <h2 class="slide-title anim-element anim-fade-up">Medication Reminder System</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.1s;">A fail-safe module designed to completely eliminate missed doses and improve patient compliance.</p>
+                    <div class="bullet-list">
+                        <ul>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.2s;"><i class="fa-solid fa-capsules"></i> Precise time-based push notifications.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.3s;"><i class="fa-solid fa-capsules"></i> Clear dosage instructions (e.g., "2 pills after food").</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.4s;"><i class="fa-solid fa-capsules"></i> One-tap "Mark as taken" logging.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.5s;"><i class="fa-solid fa-capsules"></i> Snooze and follow-up alert protocols.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.6s;">
+                        <!-- Mobile Phone & Pills -->
+                        <img src="https://images.unsplash.com/photo-1576602976047-174e57a47881?auto=format&fit=crop&w=800&q=80" alt="Medication pill reminder UI">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 12: Doughnut_Chart_For_Proportions (Water Tracker) -->
+    <div class="slide-container" id="slide12">
+        <h2 class="slide-title anim-element anim-fade-up">Water Intake Tracker</h2>
+        <div class="content-area">
+            <div class="chart-container anim-element anim-fade-up" style="transition-delay: 0.2s;">
+                <div class="doughnut-chart-container">
+                    <div class="doughnut-chart" style="background: conic-gradient(#38BDF8 0% 65%, rgba(30, 41, 59, 0.5) 65% 100%); border-color: rgba(15, 23, 42, 0.8);"></div>
+                    <ul class="legend">
+                        <li><div class="color-box" style="background-color: #38BDF8;"></div>Target Reached (65%)</li>
+                        <li><div class="color-box" style="background-color: #1E293B; border: 1px solid #334155;"></div>Remaining (35%)</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="chart-summary anim-element anim-fade-up" style="text-align: center; margin-top: 30px; transition-delay: 0.4s;">
+                Features daily monitoring, smart hydration intervals, and precise percentage-based progress visualization to ensure optimal fluid levels.
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 13: Image_Right_Text_Left (Fitness Module) -->
+    <div class="slide-container" id="slide13">
+        <h2 class="slide-title anim-element anim-fade-up">Fitness & Exercise Module</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.1s;">An integrated suite to plan, execute, and record physical activities without needing a secondary application.</p>
+                    <div class="bullet-list">
+                        <ul>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.2s;"><i class="fa-solid fa-dumbbell"></i> View curated exercise plans tailored to goals.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.3s;"><i class="fa-solid fa-dumbbell"></i> Track active workouts in real-time.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.4s;"><i class="fa-solid fa-dumbbell"></i> Schedule future exercises into your calendar.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.5s;"><i class="fa-solid fa-dumbbell"></i> Review historical workout performance logs.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.6s;">
+                        <!-- Workout Tracking -->
+                        <img src="https://images.unsplash.com/photo-1526506114864-4e9240bc30e4?auto=format&fit=crop&w=800&q=80" alt="Workout fitness tracking UI">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 14: Bar_Chart_For_Comparisons (Analytics) -->
+    <div class="slide-container" id="slide14">
+        <h2 class="slide-title anim-element anim-fade-up">Health Analytics</h2>
+        <div class="content-area">
+            <div class="chart-container" style="width: 80%; margin: 0 auto;">
+                <div class="bar anim-element anim-fade-up" style="transition-delay: 0.1s;">
+                    <div class="label tech-font">WATER INTAKE</div>
+                    <div class="bar-inner"><div class="bar-fill" style="width: 90%; background-color: #38BDF8;">90%</div></div>
+                </div>
+                <div class="bar anim-element anim-fade-up" style="transition-delay: 0.2s;">
+                    <div class="label tech-font">CALORIES BURNED</div>
+                    <div class="bar-inner"><div class="bar-fill" style="width: 80%; background-color: #A78BFA;">80%</div></div>
+                </div>
+                <div class="bar anim-element anim-fade-up" style="transition-delay: 0.3s;">
+                    <div class="label tech-font">STEPS WALKED</div>
+                    <div class="bar-inner"><div class="bar-fill" style="width: 65%; background-color: #4ADE80;">65%</div></div>
+                </div>
+                <div class="bar anim-element anim-fade-up" style="transition-delay: 0.4s;">
+                    <div class="label tech-font">SLEEP QUALITY</div>
+                    <div class="bar-inner"><div class="bar-fill" style="width: 70%; background-color: #F8FAFC;">70%</div></div>
+                </div>
+            </div>
+            <p class="chart-summary anim-element anim-fade-up" style="text-align: center; margin-top: 40px; transition-delay: 0.6s;">
+                The platform translates raw data into meaningful daily progress metrics, empowering users with visual feedback on their continuous health journey.
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 15: Image Right Layout (Notification System) -->
+    <div class="slide-container" id="slide15">
+        <h2 class="slide-title anim-element anim-fade-up">Notification System</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.1s;">A robust, customizable alert architecture ensuring critical actions are never missed.</p>
+                    <div class="bullet-list">
+                        <ul>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.2s;"><i class="fa-solid fa-bell" style="color: #38BDF8;"></i> <strong>Medication Alerts:</strong> Persistent notifications for scheduled doses.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.3s;"><i class="fa-solid fa-bell" style="color: #4ADE80;"></i> <strong>Exercise Reminders:</strong> Motivational nudges to begin workouts.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.4s;"><i class="fa-solid fa-bell" style="color: #38BDF8;"></i> <strong>Hydration Pings:</strong> Gentle periodic reminders to drink water.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.5s;"><i class="fa-solid fa-bell" style="color: #A78BFA;"></i> <strong>System Updates:</strong> Background health summaries.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.6s;">
+                        <!-- Mobile Notification Context -->
+                        <img src="https://images.unsplash.com/photo-1596742578443-7682ef5251cd?auto=format&fit=crop&w=800&q=80" alt="Smartphone push notifications">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 16: Image_Right_Text_Left (Meal Plans) -->
+    <div class="slide-container" id="slide16">
+        <h2 class="slide-title anim-element anim-fade-up">Diet & Meal Plans</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <p class="anim-element anim-fade-up" style="transition-delay: 0.1s;">Nutrition is a fundamental pillar of health. The app algorithmically suggests customized meal plans.</p>
+                    <div class="bullet-list">
+                        <ul>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.2s;"><i class="fa-solid fa-utensils"></i> View daily macro and micro-nutrient targets.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.3s;"><i class="fa-solid fa-utensils"></i> Access curated recipes with exact calorie info.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.4s;"><i class="fa-solid fa-utensils"></i> Logging system to maintain a healthy dietary lifestyle.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.5s;">
+                        <!-- Healthy Meal Prep -->
+                        <img src="https://images.unsplash.com/photo-1490645935980-d14d31861714?auto=format&fit=crop&w=800&q=80" alt="Healthy meal plan diet">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 17: Tiled_Text_With_Icons (News & Tips) -->
+    <div class="slide-container" id="slide17">
+        <h2 class="slide-title anim-element anim-fade-up">News & Health Tips</h2>
+        <div class="content-area">
+            <div class="tiled-content">
+                <div class="tile anim-element anim-fade-up" style="transition-delay: 0.1s;">
+                    <div class="icon"><i class="fa-solid fa-newspaper" style="color: #A78BFA;"></i></div>
+                    <h3 style="color:#F8FAFC;">Global News</h3>
+                    <p>Curated feeds delivering the latest advancements and articles in global health and medical sciences.</p>
+                </div>
+                <div class="tile anim-element anim-fade-up" style="transition-delay: 0.3s;">
+                    <div class="icon"><i class="fa-solid fa-book-medical" style="color: #A78BFA;"></i></div>
+                    <h3 style="color:#F8FAFC;">Guidelines</h3>
+                    <p>Access to verified medical guidelines and standard care practices directly from health authorities.</p>
+                </div>
+                <div class="tile anim-element anim-fade-up" style="transition-delay: 0.5s;">
+                    <div class="icon"><i class="fa-solid fa-lightbulb" style="color: #A78BFA;"></i></div>
+                    <h3 style="color:#F8FAFC;">Daily Tips</h3>
+                    <p>Bite-sized, actionable fitness and nutrition tips generated daily to keep motivation high.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 18: Two_Column_Tiled_Text (Profile Management) -->
+    <div class="slide-container" id="slide18">
+        <h2 class="slide-title anim-element anim-fade-up">User Profile Management</h2>
+        <div class="content-area">
+            <div class="two-column tiled">
+                <div class="anim-element anim-fade-up" style="transition-delay: 0.1s;">
+                    <h3 style="color: #4ADE80;"><i class="fa-solid fa-id-card"></i> Account Data</h3>
+                    <p>Secure management of core account credentials and communication preferences.</p>
+                    <ul class="tech-font" style="color: #94A3B8; font-size: 14px; list-style-type: '>'; padding-left: 20px;">
+                        <li style="margin-bottom: 10px; padding-left: 10px;">string Name; <span style="font-family:'Inter'; color:#64748B;">// Update full name</span></li>
+                        <li style="margin-bottom: 10px; padding-left: 10px;">string Email; <span style="font-family:'Inter'; color:#64748B;">// Change contact address</span></li>
+                        <li style="margin-bottom: 10px; padding-left: 10px;">bool Notifications; <span style="font-family:'Inter'; color:#64748B;">// Manage settings</span></li>
+                    </ul>
+                </div>
+                <div class="anim-element anim-fade-up" style="transition-delay: 0.3s;">
+                    <h3 style="color: #4ADE80;"><i class="fa-solid fa-heart-pulse"></i> Biometric Data</h3>
+                    <p>Continuous updating of physical metrics to ensure algorithms remain accurate.</p>
+                    <ul class="tech-font" style="color: #94A3B8; font-size: 14px; list-style-type: '>'; padding-left: 20px;">
+                        <li style="margin-bottom: 10px; padding-left: 10px;">int Age; <span style="font-family:'Inter'; color:#64748B;">// Auto-updates yearly</span></li>
+                        <li style="margin-bottom: 10px; padding-left: 10px;">float Weight; <span style="font-family:'Inter'; color:#64748B;">// Log recent changes</span></li>
+                        <li style="margin-bottom: 10px; padding-left: 10px;">float Height; <span style="font-family:'Inter'; color:#64748B;">// Modify if required</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 19: Image Right Layout (Advantages) -->
+    <div class="slide-container" id="slide19">
+        <h2 class="slide-title anim-element anim-fade-up">Advantages of the System</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <div class="bullet-list">
+                        <ul>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.1s;"><i class="fa-solid fa-arrow-trend-up" style="color: #4ADE80;"></i> <strong>Improved Adherence:</strong> Drastically increases medication adherence through fail-safe reminder loops.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.2s;"><i class="fa-solid fa-arrow-trend-up" style="color: #4ADE80;"></i> <strong>Healthy Lifestyle:</strong> Actively promotes and gamifies a consistent, healthy daily routine.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.3s;"><i class="fa-solid fa-arrow-trend-up" style="color: #4ADE80;"></i> <strong>Intuitive UX/UI:</strong> Easy-to-use, dark-mode optimized interface reduces friction for daily logging.</li>
+                            <li class="anim-element anim-fade-up" style="transition-delay: 0.4s;"><i class="fa-solid fa-arrow-trend-up" style="color: #4ADE80;"></i> <strong>Personalization:</strong> Highly personalized health tracking that adapts dynamically to user goals.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="image-wrapper anim-element anim-zoom" style="transition-delay: 0.5s;">
+                        <!-- Tech Advantage / Health Glow -->
+                        <img src="https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&fit=crop&w=800&q=80" alt="Tech abstract success concept">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 20: Tiled_Text_With_Icons (Future Enhancements) -->
+    <div class="slide-container" id="slide20">
+        <h2 class="slide-title anim-element anim-fade-up">Future Enhancements <span class="tech-font" style="font-size: 20px; color: #94A3B8;">// Roadmap</span></h2>
+        <div class="content-area">
+            <div class="tiled-content">
+                <div class="tile anim-element anim-fade-up" style="transition-delay: 0.1s;">
+                    <div class="icon"><i class="fa-solid fa-brain" style="color: #38BDF8;"></i></div>
+                    <h3 style="color:#F8FAFC;">AI Models</h3>
+                    <p>Implementation of machine learning to offer predictive, AI-based health recommendations.</p>
+                </div>
+                <div class="tile anim-element anim-fade-up" style="transition-delay: 0.3s;">
+                    <div class="icon"><i class="fa-brands fa-bluetooth" style="color: #38BDF8;"></i></div>
+                    <h3 style="color:#F8FAFC;">Wearables</h3>
+                    <p>Direct API integration with smartwatches and fitness bands for automated telemetry data sync.</p>
+                </div>
+                <div class="tile anim-element anim-fade-up" style="transition-delay: 0.5s;">
+                    <div class="icon"><i class="fa-solid fa-user-doctor" style="color: #38BDF8;"></i></div>
+                    <h3 style="color:#F8FAFC;">Medical API</h3>
+                    <p>Features for doctor appointment scheduling and automated emergency alert dispatches.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll Reveal Animation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 // Trigger when 15% of the element is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        // Optional: Stop observing once revealed
+                        // observer.unobserve(entry.target);
+                    } else {
+                        // Remove class when scrolling away to allow re-animation on scroll back
+                        entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, observerOptions);
+
+            const animElements = document.querySelectorAll('.anim-element');
+            animElements.forEach(el => observer.observe(el));
+        });
+    </script>
 </body>
 </html>
+```
